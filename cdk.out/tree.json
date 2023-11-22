@@ -1,0 +1,499 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "ResourcesStack": {
+        "id": "ResourcesStack",
+        "path": "ResourcesStack",
+        "children": {
+          "UserTable": {
+            "id": "UserTable",
+            "path": "ResourcesStack/UserTable",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ResourcesStack/UserTable/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                  "aws:cdk:cloudformation:props": {
+                    "attributeDefinitions": [
+                      {
+                        "attributeName": "partitionKey",
+                        "attributeType": "S"
+                      },
+                      {
+                        "attributeName": "sortKey",
+                        "attributeType": "S"
+                      }
+                    ],
+                    "billingMode": "PAY_PER_REQUEST",
+                    "keySchema": [
+                      {
+                        "attributeName": "partitionKey",
+                        "keyType": "HASH"
+                      },
+                      {
+                        "attributeName": "sortKey",
+                        "keyType": "RANGE"
+                      }
+                    ],
+                    "pointInTimeRecoverySpecification": {
+                      "pointInTimeRecoveryEnabled": true
+                    },
+                    "streamSpecification": {
+                      "streamViewType": "NEW_IMAGE"
+                    },
+                    "tableName": "table-opensearch"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                  "version": "2.100.0"
+                }
+              },
+              "ScalingRole": {
+                "id": "ScalingRole",
+                "path": "ResourcesStack/UserTable/ScalingRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.100.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+              "version": "2.100.0"
+            }
+          },
+          "lambdaExecRole": {
+            "id": "lambdaExecRole",
+            "path": "ResourcesStack/lambdaExecRole",
+            "children": {
+              "ImportlambdaExecRole": {
+                "id": "ImportlambdaExecRole",
+                "path": "ResourcesStack/lambdaExecRole/ImportlambdaExecRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.100.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ResourcesStack/lambdaExecRole/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "lambda.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                          ]
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.100.0"
+                }
+              },
+              "DefaultPolicy": {
+                "id": "DefaultPolicy",
+                "path": "ResourcesStack/lambdaExecRole/DefaultPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ResourcesStack/lambdaExecRole/DefaultPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "aoss:APIAccessAll",
+                                "aoss:BatchGetCollection",
+                                "aoss:List*",
+                                "dynamodb:ListStreams"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": "*"
+                            },
+                            {
+                              "Action": [
+                                "dynamodb:DescribeStream",
+                                "dynamodb:GetRecords",
+                                "dynamodb:GetShardIterator"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": {
+                                "Fn::GetAtt": [
+                                  "UserTableBD4BF69E",
+                                  "StreamArn"
+                                ]
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "lambdaExecRoleDefaultPolicy77847782",
+                        "roles": [
+                          {
+                            "Ref": "lambdaExecRole63FBAB22"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                      "version": "2.100.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
+                  "version": "2.100.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.100.0"
+            }
+          },
+          "MyCfnCollection": {
+            "id": "MyCfnCollection",
+            "path": "ResourcesStack/MyCfnCollection",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::OpenSearchServerless::Collection",
+              "aws:cdk:cloudformation:props": {
+                "name": "serverless-collection",
+                "type": "SEARCH"
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_opensearchserverless.CfnCollection",
+              "version": "2.100.0"
+            }
+          },
+          "MyCfnAccessPolicy": {
+            "id": "MyCfnAccessPolicy",
+            "path": "ResourcesStack/MyCfnAccessPolicy",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::OpenSearchServerless::AccessPolicy",
+              "aws:cdk:cloudformation:props": {
+                "description": "description",
+                "name": "accesspolicy",
+                "policy": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "[{\"Rules\":[{\"Resource\":[\"collection/serverless-collection\"],\"Permission\":[\"aoss:CreateCollectionItems\",\"aoss:DeleteCollectionItems\",\"aoss:UpdateCollectionItems\",\"aoss:DescribeCollectionItems\"],\"ResourceType\":\"collection\"},{\"Resource\":[\"index/serverless-collection/*\"],\"Permission\":[\"aoss:CreateIndex\",\"aoss:DeleteIndex\",\"aoss:UpdateIndex\",\"aoss:DescribeIndex\",\"aoss:ReadDocument\",\"aoss:WriteDocument\"],\"ResourceType\":\"index\"}],\"Principal\":[\"",
+                      {
+                        "Fn::GetAtt": [
+                          "lambdaExecRole63FBAB22",
+                          "Arn"
+                        ]
+                      },
+                      "\"],\"Description\":\"Rule 1\"}]"
+                    ]
+                  ]
+                },
+                "type": "data"
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_opensearchserverless.CfnAccessPolicy",
+              "version": "2.100.0"
+            }
+          },
+          "MyCfnSecurityPolicy": {
+            "id": "MyCfnSecurityPolicy",
+            "path": "ResourcesStack/MyCfnSecurityPolicy",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::OpenSearchServerless::SecurityPolicy",
+              "aws:cdk:cloudformation:props": {
+                "description": "description",
+                "name": "securitypolicy",
+                "policy": "[{\"Rules\":[{\"ResourceType\":\"collection\",\"Resource\":[\"collection/serverless-collection\"]},{\"ResourceType\":\"dashboard\",\"Resource\":[\"collection/serverless-collection\"]}],\"AllowFromPublic\":true}]",
+                "type": "network"
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_opensearchserverless.CfnSecurityPolicy",
+              "version": "2.100.0"
+            }
+          },
+          "MyCfnEncryptionPolicy": {
+            "id": "MyCfnEncryptionPolicy",
+            "path": "ResourcesStack/MyCfnEncryptionPolicy",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::OpenSearchServerless::SecurityPolicy",
+              "aws:cdk:cloudformation:props": {
+                "name": "encryptionpolicy",
+                "policy": "{\"Rules\":[{\"ResourceType\":\"collection\",\"Resource\":[\"collection/serverless-collection\"]}],\"AWSOwnedKey\":true}",
+                "type": "encryption"
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_opensearchserverless.CfnSecurityPolicy",
+              "version": "2.100.0"
+            }
+          },
+          "opensearchpy": {
+            "id": "opensearchpy",
+            "path": "ResourcesStack/opensearchpy",
+            "children": {
+              "Code": {
+                "id": "Code",
+                "path": "ResourcesStack/opensearchpy/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "ResourcesStack/opensearchpy/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.100.0"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "ResourcesStack/opensearchpy/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.100.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.100.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ResourcesStack/opensearchpy/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::LayerVersion",
+                  "aws:cdk:cloudformation:props": {
+                    "compatibleRuntimes": [
+                      "python3.10"
+                    ],
+                    "content": {
+                      "s3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                      },
+                      "s3Key": "0fd3771c49dcc0cedf17353596255c42efd7570238952c3e61114ca0a7c737b0.zip"
+                    },
+                    "description": "urllib3<2, opensearch-py"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnLayerVersion",
+                  "version": "2.100.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.LayerVersion",
+              "version": "2.100.0"
+            }
+          },
+          "UserTableIndexingFunction": {
+            "id": "UserTableIndexingFunction",
+            "path": "ResourcesStack/UserTableIndexingFunction",
+            "children": {
+              "Code": {
+                "id": "Code",
+                "path": "ResourcesStack/UserTableIndexingFunction/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "ResourcesStack/UserTableIndexingFunction/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.100.0"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "ResourcesStack/UserTableIndexingFunction/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.100.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.100.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ResourcesStack/UserTableIndexingFunction/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                      },
+                      "s3Key": "dfae50e6856d96a6db9f7e70e73078a20283c0db710febc7195338c0fc6cb858.zip"
+                    },
+                    "environment": {
+                      "variables": {
+                        "AOSS_ENDPOINT": {
+                          "Fn::GetAtt": [
+                            "MyCfnCollection",
+                            "CollectionEndpoint"
+                          ]
+                        }
+                      }
+                    },
+                    "handler": "app.handler",
+                    "layers": [
+                      {
+                        "Ref": "opensearchpy8BFE8238"
+                      }
+                    ],
+                    "role": {
+                      "Fn::GetAtt": [
+                        "lambdaExecRole63FBAB22",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "python3.10",
+                    "timeout": 30
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.100.0"
+                }
+              },
+              "DynamoDBEventSource:ResourcesStackUserTableB700AAB3": {
+                "id": "DynamoDBEventSource:ResourcesStackUserTableB700AAB3",
+                "path": "ResourcesStack/UserTableIndexingFunction/DynamoDBEventSource:ResourcesStackUserTableB700AAB3",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ResourcesStack/UserTableIndexingFunction/DynamoDBEventSource:ResourcesStackUserTableB700AAB3/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::EventSourceMapping",
+                      "aws:cdk:cloudformation:props": {
+                        "batchSize": 1,
+                        "eventSourceArn": {
+                          "Fn::GetAtt": [
+                            "UserTableBD4BF69E",
+                            "StreamArn"
+                          ]
+                        },
+                        "functionName": {
+                          "Ref": "UserTableIndexingFunction5B23F4B5"
+                        },
+                        "maximumRetryAttempts": 3,
+                        "startingPosition": "TRIM_HORIZON"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnEventSourceMapping",
+                      "version": "2.100.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.EventSourceMapping",
+                  "version": "2.100.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.100.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "ResourcesStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "ResourcesStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.100.0"
+                }
+              },
+              "Condition": {
+                "id": "Condition",
+                "path": "ResourcesStack/CDKMetadata/Condition",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnCondition",
+                  "version": "2.100.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.3.0"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "ResourcesStack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.100.0"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "ResourcesStack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.100.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.100.0"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.3.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.100.0"
+    }
+  }
+}

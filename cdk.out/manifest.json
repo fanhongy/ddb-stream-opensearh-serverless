@@ -1,0 +1,139 @@
+{
+  "version": "34.0.0",
+  "artifacts": {
+    "ResourcesStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ResourcesStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ResourcesStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "ResourcesStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/760e55e9f5e76a727b9f43f1a3a0a635c205adf8f68d4b32f4cd3669ede029c4.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ResourcesStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ResourcesStack.assets"
+      ],
+      "metadata": {
+        "/ResourcesStack/UserTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "UserTableBD4BF69E"
+            }
+          }
+        ],
+        "/ResourcesStack/UserTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserTableBD4BF69E"
+          }
+        ],
+        "/ResourcesStack/lambdaExecRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "lambdaExecRole63FBAB22"
+          }
+        ],
+        "/ResourcesStack/lambdaExecRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "lambdaExecRoleDefaultPolicy77847782"
+          }
+        ],
+        "/ResourcesStack/MyCfnCollection": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyCfnCollection"
+          }
+        ],
+        "/ResourcesStack/MyCfnAccessPolicy": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyCfnAccessPolicy"
+          }
+        ],
+        "/ResourcesStack/MyCfnSecurityPolicy": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyCfnSecurityPolicy"
+          }
+        ],
+        "/ResourcesStack/MyCfnEncryptionPolicy": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyCfnEncryptionPolicy"
+          }
+        ],
+        "/ResourcesStack/opensearchpy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "opensearchpy8BFE8238"
+          }
+        ],
+        "/ResourcesStack/UserTableIndexingFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserTableIndexingFunction5B23F4B5"
+          }
+        ],
+        "/ResourcesStack/UserTableIndexingFunction/DynamoDBEventSource:ResourcesStackUserTableB700AAB3/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserTableIndexingFunctionDynamoDBEventSourceResourcesStackUserTableB700AAB3F4C7F493"
+          }
+        ],
+        "/ResourcesStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ResourcesStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/ResourcesStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ResourcesStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ResourcesStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

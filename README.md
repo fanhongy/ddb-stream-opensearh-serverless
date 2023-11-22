@@ -48,4 +48,3 @@ This pattern will create a DynamoDB table, an Opensearch Serverless collections.
 * `cdk diff`        compare deployed stack with current state
 * `cdk synth`       emits the synthesized CloudFormation template
 
-# ddb-stream-opensearh-serverless
